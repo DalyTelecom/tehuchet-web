@@ -170,6 +170,8 @@ const fetchAbonents = (pageNumber) => {
 		li = document.createElement('li');
 		li.innerHTML = `<button type="button" class="page ${NEXT_PAGE_CLASS}" ${!data.abonents.length || data.pageNumber === pagesCount ? 'disabled' : ''}> > </button>`;
 		pagination.append(li);
+
+		output.textContent = `Получено ${ data.total } записей`;
 	})
 	.catch((err) => {
 		output.classList.add('error');
