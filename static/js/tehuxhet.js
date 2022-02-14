@@ -160,15 +160,14 @@ const fetchAbonents = (pageNumber) => {
 		li.innerHTML = `<button type="button" class="page ${PREVIOUS_PAGE_CLASS}" ${!data.abonents.length || data.pageNumber === 1 ? 'disabled' : ''}> < </button>`;
 		pagination.append(li);
 
-		const pagesCount = Math.ceil(data.total / data.pageSize);
-		for (let i = 1; i <= pagesCount; i++) {
+		for (let i = 1; i <= data.totalPages; i++) {
 			li = document.createElement('li');
 			li.innerHTML = `<button type="button" class="page ${PAGE_NUMBER_CLASS} ${i === data.pageNumber ? ACTIVE_CLASS : ''}">${ i }</button>`;
 			pagination.append(li);
 		}
 
 		li = document.createElement('li');
-		li.innerHTML = `<button type="button" class="page ${NEXT_PAGE_CLASS}" ${!data.abonents.length || data.pageNumber === pagesCount ? 'disabled' : ''}> > </button>`;
+		li.innerHTML = `<button type="button" class="page ${NEXT_PAGE_CLASS}" ${!data.abonents.length || data.pageNumber === data.totalPages ? 'disabled' : ''}> > </button>`;
 		pagination.append(li);
 
 		output.textContent = `Получено ${ data.total } записей`;
