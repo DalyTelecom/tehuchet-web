@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="ru">
+	<head>
+		<title>Техучёт</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes" />
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<link rel="stylesheet" href="css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<div id="wrapper">
+			<div id="main">
+				<div class="inner">
+
+					<header id="header">
+						<span class="logo"><strong>Техучёт</strong></span>
+						<button type="button" id="auth">Войти</button>
+					</header>
+
+					<section>
+
+						<div class="row gtr-200">
+							<div class="col-6 col-12-medium">
+
+								<h3>Параметры поиска</h3>
+
+								<form>
+									<div class="row gtr-uniform">
+										<div class="col-12">
+											<input type="text" id="name" value="" placeholder="Имя" disabled />
+										</div>
+										<div class="col-12">
+											<input type="text" id="phone" value="" placeholder="Телефон" disabled />
+										</div>
+											<div class="col-12">
+											<input type="text" id="address" value="" placeholder="Адрес" disabled />
+										</div>
+
+										<div class="col-12">
+											<ul class="actions">
+												<li><button type="button" id="search" class="primary" disabled>Поиск</button></li>
+												<li><button type="reset" id="reset" disabled>Сброс</button></li>
+												<li><span>Элементов на странице:</span></li>
+												<li>
+													<select id="perpage" disabled>
+														<option value="10">10</option>
+														<option value="25">25</option>
+														<option value="50">50</option>
+														<option value="100">100</option>
+													</select>
+												</li>
+											</ul>
+										</div>
+										<br>
+										<output class="col-12"><strong class="error">Залогинтесь</strong></output>
+									</div>
+								</form>
+
+							</div>
+
+							<div class="col-6 col-12-medium">
+
+								<h3>Список абонентов</h3>
+
+								<div class="table-wrapper">
+									<table>
+										<thead>
+											<tr>
+												<th>Имя</th>
+												<th>Телефон</th>
+												<th>Адрес</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+
+								<ul class="pagination"></ul>
+
+							</div>
+						</div>
+
+					</section>
+
+				</div>
+			</div>
+		</div>
+
+		<script src="js/jquery.min.js"></script>
+		<script src="js/browser.min.js"></script>
+		<script src="js/breakpoints.min.js"></script>
+		<script src="js/util.js"></script>
+		<script src="js/main.js"></script>
+		<script src="js/tehuxhet.js"></script>
+
+	</body>
+</html>
