@@ -7,6 +7,16 @@ const PREVIOUS_PAGE_CLASS = 'previouspage';
 
 let authHeader = '';
 
+const checkNginxErrorHtmlAndParseJson = (res) => {
+	const contentType = res.headers.get('Content-Type');
+	if (contentType.includes('text/html')) {
+		const message = text.split('<title>')[1].split('</title>')[0];
+		throw new Error(message);
+	}
+
+	return res.json();
+};
+
 const generateBasicAuthHeader = (login, password) => {
 	return new Promise((resolve, reject) => {
 		try {
@@ -56,7 +66,7 @@ const login = () => {
 			'accept-encoding': 'gzip'
 		},
 	})
-	.then((res) => res.json())
+	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then(async (data) => {
 		if (data?.success !== true) {
 			throw new Error('Неверный логин или пароль');
@@ -139,9 +149,7 @@ const fetchAbonents = (pageNumber) => {
 			'Authorization': authHeader,
 		},
 	})
-	.then((res) => {
-		return res.json();
-	})
+	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
 		if (data?.error) {
 			throw new Error(data?.message?.join('; ') || 'Неизвестная ошибка');
