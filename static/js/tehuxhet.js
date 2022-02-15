@@ -7,10 +7,11 @@ const PREVIOUS_PAGE_CLASS = 'previouspage';
 
 let authHeader = '';
 
-const checkNginxErrorHtmlAndParseJson = (res) => {
+const checkNginxErrorHtmlAndParseJson = async (res) => {
 	const contentType = res.headers.get('Content-Type');
 	if (contentType.includes('text/html')) {
-		const message = text.split('<title>')[1].split('</title>')[0];
+		const html = await res.text();
+		const message = html.split('<title>')[1].split('</title>')[0];
 		throw new Error(message);
 	}
 
