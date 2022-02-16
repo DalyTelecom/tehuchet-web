@@ -128,7 +128,7 @@ const fetchAbonents = (pageNumber) => {
 	phoneInput.disabled = true;
 	addressInput.disabled = true;
 
-	const url = new URL(location.origin + '/api/v2/abonents');
+	const url = new URL(location.origin + '/api/v2/light-flat-abonents');
 	const searchParams = {
 		pageSize: perpageSelect.value,
 		pageNumber: Number(pageNumber) || 1,
@@ -159,27 +159,29 @@ const fetchAbonents = (pageNumber) => {
 		tbody.innerHTML = '';
 		pagination.innerHTML = '';
 
-		data.abonents.forEach((a) => {
+		const [abonents, total, pageNumber, pageSize, totalPages] = data;
+
+		abonents.forEach(([id, name, address, phone]) => {
 			const tr = document.createElement('tr');
-			tr.innerHTML = `<td>${a.name || '-'}</td><td>${a.phone || '-'}</td><td>${a.address || '-'}</td>`;
+			tr.innerHTML = `<td>${name || '-'}</td><td>${phone || '-'}</td><td>${address || '-'}</td>`;
 			tbody.append(tr);
 		});
 
 		let li = document.createElement('li');
-		li.innerHTML = `<button type="button" class="page ${PREVIOUS_PAGE_CLASS}" ${!data.abonents.length || data.pageNumber === 1 ? 'disabled' : ''}> < </button>`;
+		li.innerHTML = `<button type="button" class="page ${PREVIOUS_PAGE_CLASS}" ${!abonents.length || pageNumber === 1 ? 'disabled' : ''}> < </button>`;
 		pagination.append(li);
 
-		for (let i = 1; i <= data.totalPages; i++) {
+		for (let i = 1; i <= totalPages; i++) {
 			li = document.createElement('li');
-			li.innerHTML = `<button type="button" class="page ${PAGE_NUMBER_CLASS} ${i === data.pageNumber ? ACTIVE_CLASS : ''}">${ i }</button>`;
+			li.innerHTML = `<button type="button" class="page ${PAGE_NUMBER_CLASS} ${i === pageNumber ? ACTIVE_CLASS : ''}">${ i }</button>`;
 			pagination.append(li);
 		}
 
 		li = document.createElement('li');
-		li.innerHTML = `<button type="button" class="page ${NEXT_PAGE_CLASS}" ${!data.abonents.length || data.pageNumber === data.totalPages ? 'disabled' : ''}> > </button>`;
+		li.innerHTML = `<button type="button" class="page ${NEXT_PAGE_CLASS}" ${!abonents.length || pageNumber === totalPages ? 'disabled' : ''}> > </button>`;
 		pagination.append(li);
 
-		output.textContent = `Получено ${ data.total } записей`;
+		output.textContent = `Получено ${ total } записей`;
 	})
 	.catch((err) => {
 		output.classList.add('error');
