@@ -163,7 +163,7 @@ const fetchAbonents = (pageNumber) => {
 
 		abonents.forEach(([id, name, address, phone]) => {
 			const tr = document.createElement('tr');
-			tr.innerHTML = `<td>${name || '-'}</td><td>${phone || '-'}</td><td>${address || '-'}</td>`;
+			tr.innerHTML = `<td>${id || '-'}</td><td>${name || '-'}</td><td>${phone || '-'}</td><td>${address || '-'}</td>`;
 			tbody.append(tr);
 		});
 
