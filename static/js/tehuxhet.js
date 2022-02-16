@@ -5,7 +5,7 @@ const PAGE_NUMBER_CLASS = 'pagenumber';
 const NEXT_PAGE_CLASS = 'nextpage';
 const PREVIOUS_PAGE_CLASS = 'previouspage';
 
-let authHeader = '';
+let loggedIn = false;
 
 const checkNginxErrorHtmlAndParseJson = async (res) => {
 	const contentType = res.headers.get('Content-Type');
@@ -17,24 +17,6 @@ const checkNginxErrorHtmlAndParseJson = async (res) => {
 
 	return res.json();
 };
-
-const generateBasicAuthHeader = (login, password) => {
-	return new Promise((resolve, reject) => {
-		try {
-			const reader = new FileReader();
-			reader.readAsDataURL(new Blob([login + ':' + password]));
-			reader.onerror = (e) => reject(e);
-			reader.onloadend = () => {
-				// data:application/octet-stream;base64,Z.....==
-				const base64data = reader.result.split(',')[1];
-				resolve('Basic ' + base64data);
-			}
-
-		} catch (error) {
-			reject(error);
-		}
-	});
-}
 
 const tbody = document.body.querySelector('tbody');
 const searchButton = document.body.querySelector('#search');
@@ -52,7 +34,7 @@ const login = () => {
 	output.classList.remove('error');
 	authButton.disabled = true;
 
-	if (authHeader.length > 0) {
+	if (loggedIn === true) {
 		throw new Error('Вы уже вошли в систему');
 	}
 
@@ -73,7 +55,7 @@ const login = () => {
 			throw new Error('Неверный логин или пароль');
 		}
 
-		authHeader = await generateBasicAuthHeader(login, password);
+		loggedIn = true;
 		authButton.textContent = 'Выйти';
 
 		searchButton.disabled = false;
@@ -96,7 +78,7 @@ const login = () => {
 };
 
 const logout = () => {
-	authHeader = '';
+	loggedIn = false;
 	output.classList.remove('error');
 	authButton.textContent = 'Войти';
 
@@ -147,7 +129,6 @@ const fetchAbonents = (pageNumber) => {
 	return fetch(url, {
 		headers: {
 			'accept-encoding': 'gzip',
-			'Authorization': authHeader,
 		},
 	})
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
@@ -242,7 +223,7 @@ const paginateAbonents = (event) => {
 };
 
 authButton.addEventListener('click', () => {
-	authHeader.length > 0 ? logout() : login();
+	loggedIn === true ? logout() : login();
 });
 searchButton.addEventListener('click', searchAbonents);
 pagination.addEventListener('click', paginateAbonents);
