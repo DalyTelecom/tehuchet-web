@@ -663,6 +663,15 @@ const deleteAbonent = () => {
 			output.classList.remove('error');
 			output.textContent = `Данные абонента ${abonentID} ${name} удалены`;
 
+			const rows = Array.from( tbody.querySelectorAll('tr') );
+			const rowToDelete = rows.find((r) => {
+				const idCell = r.querySelector('td');
+				return idCell.textContent === abonentID;
+			});
+			if (rowToDelete !== undefined) {
+				rowToDelete.remove();
+			}
+
 			closeDetails();
 		})
 		.catch((err) => {
