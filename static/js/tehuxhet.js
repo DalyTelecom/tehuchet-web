@@ -421,6 +421,10 @@ const fetchAbonentDetails = (abonentID) => {
 			phoneInput.disabled = false;
 			addressInput.disabled = false;
 			backToListButton.disabled = false;
+
+			pagination.querySelectorAll('button').forEach(
+				(b) => { b.disabled = false; }
+			);
 		}
 	});
 };
