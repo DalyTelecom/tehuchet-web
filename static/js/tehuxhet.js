@@ -122,18 +122,18 @@ const logout = () => {
 	.catch((err) => {
 		output.classList.add('error');
 		let message = '';
-		if (data?.error) {
-			if (typeof data?.message === 'string') {
-				message = data.message;
+		if (err?.error) {
+			if (typeof err?.message === 'string') {
+				message = err.message;
 			}
-			else if (Array.isArray(data?.message)) {
-				message = data.message.join('; ');
+			else if (Array.isArray(err?.message)) {
+				message = err.message.join('; ');
 			}
 			else {
 				message = 'Неизвестная ошибка';
 			}
 
-			if (data?.statusCode === 401 || data?.statusCode === 419) {
+			if (err?.statusCode === 401 || err?.statusCode === 419) {
 				loggedIn = false;
 				authButton.textContent = 'Войти';
 			}
@@ -229,18 +229,18 @@ const fetchAbonents = (pageNumber) => {
 	.catch((err) => {
 		output.classList.add('error');
 		let message = '';
-		if (data?.error) {
-			if (typeof data?.message === 'string') {
-				message = data.message;
+		if (err?.error) {
+			if (typeof err?.message === 'string') {
+				message = err.message;
 			}
-			else if (Array.isArray(data?.message)) {
-				message = data.message.join('; ');
+			else if (Array.isArray(err?.message)) {
+				message = err.message.join('; ');
 			}
 			else {
 				message = 'Неизвестная ошибка';
 			}
 
-			if (data?.statusCode === 401 || data?.statusCode === 419) {
+			if (err?.statusCode === 401 || err?.statusCode === 419) {
 				loggedIn = false;
 				authButton.textContent = 'Войти';
 			}
