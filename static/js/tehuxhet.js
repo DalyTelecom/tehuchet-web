@@ -159,6 +159,45 @@ const logout = () => {
 	});
 };
 
+const initCheckAuth = () =>
+{
+	authButton.disabled = true;
+	output.textContent = '';
+
+	fetch('api/v2/check-auth')
+		.then((res) => checkNginxErrorHtmlAndParseJson(res))
+		.then((data) => {
+			if (data?.success !== true) {
+				throw data;
+			}
+
+			loggedIn = true;
+			authButton.textContent = 'Выйти';
+
+			searchButton.disabled = false;
+			resetButton.disabled = false;
+
+			perpageSelect.disabled = false;
+			nameInput.disabled = false;
+			phoneInput.disabled = false;
+			addressInput.disabled = false;
+
+			output.classList.remove('error');
+			output.textContent = 'Можете приступать к поиску';
+		})
+		.catch((err) => {
+			output.classList.add('error');
+			let message = 'Залогинтесь';
+			if (err?.error ?? err?.statusCode === 419 && typeof err?.message === 'string') {
+				message = err.message;
+			}
+			output.textContent = message;
+		})
+		.finally(() => {
+			authButton.disabled = false;
+		});
+};
+
 const fetchAbonents = (pageNumber) => {
 	output.textContent = '';
 	output.classList.remove('error');
@@ -312,5 +351,8 @@ authButton.addEventListener('click', () => {
 });
 searchButton.addEventListener('click', searchAbonents);
 pagination.addEventListener('click', paginateAbonents);
+
+
+document.addEventListener('DOMContentLoaded', initCheckAuth, {once: true});
 
 })();
