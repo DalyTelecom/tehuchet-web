@@ -1529,6 +1529,7 @@ table {
 		padding: 0 0.75em 0.75em 0.75em;
 		text-align: left; }
 	table.abonent-details td {
+		color: var(--bold);
 		padding: 0.75em; }
 	table thead {
 		border-bottom: solid 2px var(--grey-border-color); }
