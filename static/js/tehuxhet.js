@@ -718,6 +718,9 @@ const deleteAbonent = () => {
 };
 
 const startCreating = () => {
+	output.classList.remove('error');
+	output.textContent = 'Введите данные нового абонента';
+
 	currentAbonentState = {};
 	searchSection.classList.add('js-hidden');
 	detailsSection.classList.remove('js-hidden');
@@ -752,6 +755,9 @@ const startCreating = () => {
 };
 
 const cancelCreating = () => {
+	output.classList.remove('error');
+	output.textContent = 'Создание нового абонента отменено';
+
 	searchSection.classList.remove('js-hidden');
 	detailsSection.classList.add('js-hidden');
 
