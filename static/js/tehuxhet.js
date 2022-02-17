@@ -420,6 +420,7 @@ const fetchAbonentDetails = (abonentID) => {
 			nameInput.disabled = false;
 			phoneInput.disabled = false;
 			addressInput.disabled = false;
+			backToListButton.disabled = false;
 		}
 	});
 };
