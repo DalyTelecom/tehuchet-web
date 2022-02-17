@@ -18,6 +18,15 @@ const checkNginxErrorHtmlAndParseJson = async (res) => {
 	return res.json();
 };
 
+const checkAuthStatus = (res) => {
+	const {status} = res;
+	if (status === 401 || status || 419) {
+		loggedIn = false;
+		authButton.textContent = 'Войти';
+	}
+	return res;
+};
+
 const tbody = document.body.querySelector('tbody');
 const searchButton = document.body.querySelector('#search');
 const resetButton = document.body.querySelector('#reset');
@@ -104,14 +113,7 @@ const logout = () => {
 			'accept-encoding': 'gzip'
 		},
 	})
-	.then((res) => {
-		const {status} = res;
-		if (status === 401 || status || 419) {
-			loggedIn = false;
-			authButton.textContent = 'Войти';
-		}
-		return res;
-	})
+	.then((res) => checkAuthStatus(res))
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then(async (data) => {
 		if (data?.success !== true) {
@@ -166,13 +168,7 @@ const fetchAbonents = (pageNumber) => {
 			'accept-encoding': 'gzip',
 		},
 	})
-	.then(({status}) => {
-		if (status === 401 || status || 419) {
-			loggedIn = false;
-			authButton.textContent = 'Войти';
-		}
-		return res;
-	})
+	.then((res) => checkAuthStatus(res))
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
 		if (data?.error) {
