@@ -104,7 +104,8 @@ const logout = () => {
 			'accept-encoding': 'gzip'
 		},
 	})
-	.then(({status}) => {
+	.then((res) => {
+		const {status} = res;
 		console.log({status});
 		if (status === 401 || status || 419) {
 			loggedIn = false;
