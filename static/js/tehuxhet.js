@@ -126,7 +126,7 @@ const logout = () => {
 	})
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
-		if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
+		if (data?.error || (data?.statusCode && data.statusCode !== OK)) {
 			throw data;
 		}
 
@@ -210,7 +210,7 @@ const initCheckAuth = () =>
 		.catch((err) => {
 			output.classList.add('error');
 			let message = 'Залогинтесь';
-			if (err?.error & err?.statusCode === 419 & typeof err?.message === 'string') {
+			if (err?.error && err?.statusCode === 419 && typeof err?.message === 'string') {
 				message = err.message;
 			}
 			output.textContent = message;
@@ -256,7 +256,7 @@ const fetchAbonents = (pageNumber) => {
 	})
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
-		if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
+		if (data?.error || (data?.statusCode && data.statusCode !== OK)) {
 			throw data;
 		}
 
@@ -351,7 +351,7 @@ const fetchAbonentDetails = (abonentID) => {
 	})
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
-		if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
+		if (data?.error || (data?.statusCode && data.statusCode !== OK)) {
 			throw data;
 		}
 
@@ -574,7 +574,7 @@ const commit = () => {
 	)
 		.then((res) => checkNginxErrorHtmlAndParseJson(res))
 		.then((data) => {
-			if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
+			if (data?.error || (data?.statusCode && data.statusCode !== OK)) {
 				throw data;
 			}
 
@@ -652,7 +652,7 @@ const deleteAbonent = () => {
 	fetch(`${ location.origin }/api/v2/abonents/${abonentID}`, {method: 'delete'})
 		.then((res) => checkNginxErrorHtmlAndParseJson(res))
 		.then((data) => {
-			if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
+			if (data?.error || (data?.statusCode && data.statusCode !== OK)) {
 				throw data;
 			}
 
