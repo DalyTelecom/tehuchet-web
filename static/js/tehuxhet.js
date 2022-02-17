@@ -188,7 +188,7 @@ const initCheckAuth = () =>
 		.catch((err) => {
 			output.classList.add('error');
 			let message = 'Залогинтесь';
-			if (err?.error ?? err?.statusCode === 419 && typeof err?.message === 'string') {
+			if (err?.error & err?.statusCode === 419 & typeof err?.message === 'string') {
 				message = err.message;
 			}
 			output.textContent = message;
