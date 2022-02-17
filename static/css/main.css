@@ -1528,6 +1528,8 @@ table {
 		font-weight: 600;
 		padding: 0 0.75em 0.75em 0.75em;
 		text-align: left; }
+	table.abonent-details td {
+		padding: 0.75em; }
 	table thead {
 		border-bottom: solid 2px var(--grey-border-color); }
 	table tfoot {
@@ -2219,3 +2221,7 @@ button,
 		border-top: 0;
 		margin-top: 0;
 		padding-top: 0; }
+
+.js-hidden {
+	display: none;
+}

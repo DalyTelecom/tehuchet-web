@@ -19,7 +19,7 @@
 						<button type="button" id="auth">Войти</button>
 					</header>
 
-					<section>
+					<section id="search-section">
 
 						<div class="row gtr-200">
 							<div class="col-6 col-12-medium">
@@ -74,13 +74,97 @@
 												<th>Адрес</th>
 											</tr>
 										</thead>
-										<tbody>
+										<tbody id="abonents-list">
+											<tr>
+												<td>1</td>
+												<td>Имя</td>
+												<td>Телефон</td>
+												<td>Адрес</td>
+											</tr>
 										</tbody>
 									</table>
 								</div>
 
 								<ul class="pagination"></ul>
 
+							</div>
+						</div>
+
+					</section>
+
+					<section id="details-section" class="js-hidden">
+
+						<div class="row gtr-200">
+							<div class="col-3 col-0-medium">
+								<button id="back-to-list" type="button">Назад</button>
+							</div>
+
+							<div class="col-6 col-12-medium">
+
+								<div>
+									<table class="abonent-details">
+										<tbody>
+											<tr>
+												<td id="abonent-id"></td>
+												<td>
+													<input type="text" id="abonent-name" placeholder="-" disabled />
+												</td>
+											</tr>
+											<tr>
+												<td>Адрес</td>
+												<td>
+													<input type="text" id="abonent-address" placeholder="-" disabled />
+												</td>
+											</tr>
+											<tr>
+												<td>Городской телефон</td>
+												<td>
+													<input type="text" id="abonent-phone" placeholder="-" disabled />
+												</td>
+											</tr>
+											<tr>
+												<td>Мобильный телефон</td>
+												<td>
+													<input type="text" id="abonent-mobile" placeholder="-" disabled />
+												</td>
+											</tr>
+											<tr>
+												<td>Кросс</td>
+												<td>
+													<input type="text" id="kross" placeholder="-" disabled />
+												</td>
+											</tr>
+											<tr>
+												<td>Магистраль</td>
+												<td>
+													<input type="text" id="magistral" placeholder="-" disabled />
+												</td>
+											</tr>
+											<tr>
+												<td>Распред</td>
+												<td>
+													<input type="text" id="raspred" placeholder="-" disabled />
+												</td>
+											</tr>
+											<tr>
+												<td>ADSL</td>
+												<td>
+													<input type="text" id="adsl" placeholder="-" disabled />
+												</td>
+											</tr>
+											<tr>
+												<td>Боксы</td>
+												<td id="boxes"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+
+							</div>
+
+							<div class="col-3 col-0-medium">
+								<button type="button" disabled>Редактировать</button>
+								<button type="button" disabled>Удалить</button>
 							</div>
 						</div>
 

@@ -18,7 +18,8 @@ const checkNginxErrorHtmlAndParseJson = async (res) => {
 	return res.json();
 };
 
-const tbody = document.body.querySelector('tbody');
+const searchSection = document.body.querySelector('#search-section');
+const tbody = document.body.querySelector('#abonents-list');
 const searchButton = document.body.querySelector('#search');
 const resetButton = document.body.querySelector('#reset');
 const authButton = document.body.querySelector('#auth');
@@ -28,6 +29,19 @@ const nameInput = document.body.querySelector('#name');
 const phoneInput = document.body.querySelector('#phone');
 const addressInput = document.body.querySelector('#address');
 const output = document.body.querySelector('output > strong');
+
+const detailsSection = document.body.querySelector('#details-section');
+const abonentIdElement = document.body.querySelector('#abonent-id');
+const abonentNameInput = document.body.querySelector('#abonent-name');
+const abonentAddressInput = document.body.querySelector('#abonent-address');
+const abonentPhoneInput = document.body.querySelector('#abonent-phone');
+const abonentMobileInput = document.body.querySelector('#abonent-mobile');
+const krossInput = document.body.querySelector('#kross');
+const magistralInput = document.body.querySelector('#magistral');
+const raspredInput = document.body.querySelector('#raspred');
+const adslInput = document.body.querySelector('#adsl');
+const boxes = document.body.querySelector('#boxes');
+const backToListButton = document.body.querySelector('#back-to-list');
 
 const login = () => {
 	output.textContent = '';
@@ -305,6 +319,116 @@ const fetchAbonents = (pageNumber) => {
 	});
 };
 
+const fetchAbonentDetails = (abonentID) => {
+	if (!abonentID) {
+		throw new Error('Ошибка приложения. Некорректный идентификатор абонента.');
+	}
+
+	output.textContent = '';
+	output.classList.remove('error');
+
+	authButton.disabled = true;
+	document.body.querySelectorAll('button').forEach(
+		(b) => { b.disabled = true; }
+	);
+	perpageSelect.disabled = true;
+	nameInput.disabled = true;
+	phoneInput.disabled = true;
+	addressInput.disabled = true;
+
+	return fetch(`api/v2/flat-abonents/${abonentID}`, {
+		headers: {
+			'accept-encoding': 'gzip',
+		},
+	})
+	.then((res) => checkNginxErrorHtmlAndParseJson(res))
+	.then((data) => {
+		if (data?.error) {
+			throw data;
+		}
+
+		const [
+			apiAbonentID,
+			apiName,
+			apiAddress,
+			apiPhone,
+			apiMobile,
+			apiKross,
+			apiMagistral,
+			apiRaspred,
+			apiAdsl,
+			apiBoxes,
+			apiLatitude,
+			apiLongitude,
+		] = data;
+
+		abonentIdElement.textContent = '#' + apiAbonentID;
+		abonentNameInput.value = apiName || '';
+		abonentAddressInput.value = apiAddress || '';
+		abonentPhoneInput.value = apiPhone || '';
+		abonentMobileInput.value = apiMobile || '';
+		krossInput.value = apiKross || '';
+		magistralInput.value = apiMagistral || '';
+		raspredInput.value = apiRaspred || '';
+		adslInput.value = apiAdsl || '';
+
+		let boxesContent = '';
+		apiBoxes.forEach((b, i) => {
+			if (b) {
+				boxesContent += `<input type="text" name="boxes${i + 1}" value="${b}" disabled />`;
+			}
+		});
+		boxes.innerHTML = boxesContent;
+
+		searchSection.classList.add('js-hidden');
+		detailsSection.classList.remove('js-hidden');
+
+	})
+	.catch((err) => {
+		output.classList.add('error');
+		let message = '';
+		if (err?.error) {
+			if (typeof err?.message === 'string') {
+				message = err.message;
+			}
+			else if (Array.isArray(err?.message)) {
+				message = err.message.join('; ');
+			}
+			else {
+				message = 'Неизвестная ошибка';
+			}
+
+			if (err?.statusCode === 401 || err?.statusCode === 419) {
+				loggedIn = false;
+				authButton.textContent = 'Войти';
+			}
+		}
+		else {
+			message = err.message || 'Неизвестная ошибка';
+		}
+
+		output.textContent = message;
+	})
+	.finally(() => {
+		authButton.disabled = false;
+
+		if (loggedIn === true) {
+			searchButton.disabled = false;
+			resetButton.disabled = false;
+
+			perpageSelect.disabled = false;
+			nameInput.disabled = false;
+			phoneInput.disabled = false;
+			addressInput.disabled = false;
+		}
+	});
+};
+
+const closeDetails = () => {
+	searchSection.classList.remove('js-hidden');
+	detailsSection.classList.add('js-hidden');
+};
+
 const searchAbonents = () => fetchAbonents();
 
 const getCurrentPageNumber = () => {
@@ -351,6 +475,12 @@ authButton.addEventListener('click', () => {
 });
 searchButton.addEventListener('click', searchAbonents);
 pagination.addEventListener('click', paginateAbonents);
+
+tbody.addEventListener('click', (ev) => {
+	const targetAbonentID = ev.target.closest('tr').querySelector('td').textContent;
+	fetchAbonentDetails(targetAbonentID);
+});
+backToListButton.addEventListener('click', closeDetails);
 
 
 document.addEventListener('DOMContentLoaded', initCheckAuth, {once: true});
