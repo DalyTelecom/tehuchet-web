@@ -78,9 +78,13 @@ const login = () => {
 };
 
 const logout = () => {
-	loggedIn = false;
+	output.textContent = '';
 	output.classList.remove('error');
-	authButton.textContent = 'Войти';
+	authButton.disabled = true;
+
+	if (loggedIn === true) {
+		throw new Error('Вы уже вошли в систему');
+	}
 
 	document.body.querySelectorAll('.page').forEach(
 		(b) => { b.disabled = true; }
@@ -94,7 +98,38 @@ const logout = () => {
 	phoneInput.disabled = true;
 	addressInput.disabled = true;
 
-	output.textContent = 'Залогинтесь';
+	fetch('api/v2/logout', {
+		method: 'post',
+		headers: {
+			'accept-encoding': 'gzip'
+		},
+	})
+	.then(({status}) => {
+		console.log({status});
+		if (status === 401 || status || 419) {
+			loggedIn = false;
+		}
+		return res;
+	})
+	.then((res) => checkNginxErrorHtmlAndParseJson(res))
+	.then(async (data) => {
+		if (data?.success !== true) {
+			throw new Error('Неверный логин или пароль');
+		}
+
+		loggedIn = false;
+		authButton.textContent = 'Выйти';
+		output.textContent = 'Залогинтесь';
+	})
+	.catch((err) => {
+		console.log('err:');
+		console.log(err);
+		output.classList.add('error');
+		output.textContent = err.message || 'Неизвестная ошибка';
+	})
+	.finally(() => {
+		authButton.disabled = false;
+	});
 };
 
 const fetchAbonents = (pageNumber) => {
@@ -131,6 +166,13 @@ const fetchAbonents = (pageNumber) => {
 			'accept-encoding': 'gzip',
 		},
 	})
+	.then(({status}) => {
+		console.log({status});
+		if (status === 401 || status || 419) {
+			loggedIn = false;
+		}
+		return res;
+	})
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
 		if (data?.error) {
@@ -165,6 +207,8 @@ const fetchAbonents = (pageNumber) => {
 		output.textContent = `Получено ${ total } записей`;
 	})
 	.catch((err) => {
+		console.log('err:');
+		console.log(err);
 		output.classList.add('error');
 		output.textContent = err.message;
 	})
