@@ -18,16 +18,6 @@ const checkNginxErrorHtmlAndParseJson = async (res) => {
 	return res.json();
 };
 
-const checkAuthStatus = (res) => {
-	const {status} = res;
-	console.log({status});
-	if (status === 401 || status === 419) {
-		loggedIn = false;
-		authButton.textContent = 'Войти';
-	}
-	return res;
-};
-
 const tbody = document.body.querySelector('tbody');
 const searchButton = document.body.querySelector('#search');
 const resetButton = document.body.querySelector('#reset');
@@ -114,9 +104,12 @@ const logout = () => {
 			'accept-encoding': 'gzip'
 		},
 	})
-	.then((res) => checkAuthStatus(res))
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then(async (data) => {
+		if (data?.error) {
+			throw data;
+		}
+
 		if (data?.success !== true) {
 			throw new Error('Неверный логин или пароль');
 		}
@@ -128,10 +121,41 @@ const logout = () => {
 	})
 	.catch((err) => {
 		output.classList.add('error');
-		output.textContent = err.message || 'Неизвестная ошибка';
+		let message = '';
+		if (data?.error) {
+			if (typeof data?.message === 'string') {
+				message = data.message;
+			}
+			else if (Array.isArray(data?.message)) {
+				message = data.message.join('; ');
+			}
+			else {
+				message = 'Неизвестная ошибка';
+			}
+
+			if (data?.statusCode === 401 || data?.statusCode === 419) {
+				loggedIn = false;
+				authButton.textContent = 'Войти';
+			}
+		}
+		else {
+			message = err.message || 'Неизвестная ошибка';
+		}
+
+		output.textContent = message;
 	})
 	.finally(() => {
 		authButton.disabled = false;
+
+		if (loggedIn === true) {
+			searchButton.disabled = false;
+			resetButton.disabled = false;
+
+			perpageSelect.disabled = false;
+			nameInput.disabled = false;
+			phoneInput.disabled = false;
+			addressInput.disabled = false;
+		}
 	});
 };
 
@@ -169,14 +193,10 @@ const fetchAbonents = (pageNumber) => {
 			'accept-encoding': 'gzip',
 		},
 	})
-	.then((res) => checkAuthStatus(res))
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
-		console.log(data)
-		console.log(data.error)
-		console.log(data.message)
 		if (data?.error) {
-			throw new Error(data?.message?.join('; ') || 'Неизвестная ошибка');
+			throw data;
 		}
 
 		tbody.innerHTML = '';
@@ -208,18 +228,41 @@ const fetchAbonents = (pageNumber) => {
 	})
 	.catch((err) => {
 		output.classList.add('error');
-		output.textContent = err.message;
+		let message = '';
+		if (data?.error) {
+			if (typeof data?.message === 'string') {
+				message = data.message;
+			}
+			else if (Array.isArray(data?.message)) {
+				message = data.message.join('; ');
+			}
+			else {
+				message = 'Неизвестная ошибка';
+			}
+
+			if (data?.statusCode === 401 || data?.statusCode === 419) {
+				loggedIn = false;
+				authButton.textContent = 'Войти';
+			}
+		}
+		else {
+			message = err.message || 'Неизвестная ошибка';
+		}
+
+		output.textContent = message;
 	})
 	.finally(() => {
 		authButton.disabled = false;
 
-		searchButton.disabled = false;
-		resetButton.disabled = false;
+		if (loggedIn === true) {
+			searchButton.disabled = false;
+			resetButton.disabled = false;
 
-		perpageSelect.disabled = false;
-		nameInput.disabled = false;
-		phoneInput.disabled = false;
-		addressInput.disabled = false;
+			perpageSelect.disabled = false;
+			nameInput.disabled = false;
+			phoneInput.disabled = false;
+			addressInput.disabled = false;
+		}
 	});
 };
 
