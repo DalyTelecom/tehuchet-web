@@ -20,6 +20,7 @@ const checkNginxErrorHtmlAndParseJson = async (res) => {
 
 const checkAuthStatus = (res) => {
 	const {status} = res;
+	console.log({status});
 	if (status === 401 || status === 419) {
 		loggedIn = false;
 		authButton.textContent = 'Войти';
@@ -171,6 +172,9 @@ const fetchAbonents = (pageNumber) => {
 	.then((res) => checkAuthStatus(res))
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
+		console.log(data)
+		console.log(data.error)
+		console.log(data.message)
 		if (data?.error) {
 			throw new Error(data?.message?.join('; ') || 'Неизвестная ошибка');
 		}
