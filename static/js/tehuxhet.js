@@ -106,9 +106,9 @@ const logout = () => {
 	})
 	.then((res) => {
 		const {status} = res;
-		console.log({status});
 		if (status === 401 || status || 419) {
 			loggedIn = false;
+			authButton.textContent = 'Войти';
 		}
 		return res;
 	})
@@ -119,12 +119,11 @@ const logout = () => {
 		}
 
 		loggedIn = false;
-		authButton.textContent = 'Выйти';
+		authButton.textContent = 'Войти';
+		output.classList.add('error');
 		output.textContent = 'Залогинтесь';
 	})
 	.catch((err) => {
-		console.log('err:');
-		console.log(err);
 		output.classList.add('error');
 		output.textContent = err.message || 'Неизвестная ошибка';
 	})
@@ -168,9 +167,9 @@ const fetchAbonents = (pageNumber) => {
 		},
 	})
 	.then(({status}) => {
-		console.log({status});
 		if (status === 401 || status || 419) {
 			loggedIn = false;
+			authButton.textContent = 'Войти';
 		}
 		return res;
 	})
@@ -208,8 +207,6 @@ const fetchAbonents = (pageNumber) => {
 		output.textContent = `Получено ${ total } записей`;
 	})
 	.catch((err) => {
-		console.log('err:');
-		console.log(err);
 		output.classList.add('error');
 		output.textContent = err.message;
 	})
