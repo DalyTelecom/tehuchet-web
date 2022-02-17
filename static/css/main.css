@@ -1506,6 +1506,10 @@ ul.pagination {
 .table-wrapper {
 	-webkit-overflow-scrolling: touch;
 	overflow-x: auto; }
+	.table-wrapper td {
+		cursor: pointer; }
+	.table-wrapper tr:focus {
+		color: var(--bold); }
 
 table {
 	margin: 0 0 2em 0;
