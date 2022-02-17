@@ -82,8 +82,8 @@ const logout = () => {
 	output.classList.remove('error');
 	authButton.disabled = true;
 
-	if (loggedIn === true) {
-		throw new Error('Вы уже вошли в систему');
+	if (loggedIn === false) {
+		throw new Error('Вы уже вышли из системы');
 	}
 
 	document.body.querySelectorAll('.page').forEach(
