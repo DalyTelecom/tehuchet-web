@@ -119,7 +119,7 @@ const logout = () => {
 		},
 	})
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
-	.then(async (data) => {
+	.then((data) => {
 		if (data?.error) {
 			throw data;
 		}
