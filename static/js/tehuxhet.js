@@ -49,6 +49,10 @@ const backToListButton = document.body.querySelector('#back-to-list');
 const editButton = document.body.querySelector('#edit');
 const deleteButton = document.body.querySelector('#delete');
 
+const startCreateButton = document.body.querySelector('#create');
+const commitCreateButton = document.body.querySelector('#commit-create');
+const cancelCreateButton = document.body.querySelector('#cancel-create');
+
 const login = () => {
 	output.textContent = '';
 	output.classList.remove('error');
@@ -80,6 +84,7 @@ const login = () => {
 
 		searchButton.disabled = false;
 		resetButton.disabled = false;
+		startCreateButton.disabled = false;
 
 		perpageSelect.disabled = false;
 		nameInput.disabled = false;
@@ -112,6 +117,7 @@ const logout = () => {
 
 	searchButton.disabled = true;
 	resetButton.disabled = true;
+	startCreateButton.disabled = true;
 
 	perpageSelect.disabled = true;
 	nameInput.disabled = true;
@@ -172,6 +178,7 @@ const logout = () => {
 		if (loggedIn === true) {
 			searchButton.disabled = false;
 			resetButton.disabled = false;
+			startCreateButton.disabled = false;
 
 			perpageSelect.disabled = false;
 			nameInput.disabled = false;
@@ -198,6 +205,7 @@ const initCheckAuth = () =>
 
 			searchButton.disabled = false;
 			resetButton.disabled = false;
+			startCreateButton.disabled = false;
 
 			perpageSelect.disabled = false;
 			nameInput.disabled = false;
@@ -318,6 +326,7 @@ const fetchAbonents = (pageNumber) => {
 		if (loggedIn === true) {
 			searchButton.disabled = false;
 			resetButton.disabled = false;
+			startCreateButton.disabled = false;
 
 			perpageSelect.disabled = false;
 			nameInput.disabled = false;
@@ -423,6 +432,7 @@ const fetchAbonentDetails = (abonentID) => {
 		if (loggedIn === true) {
 			searchButton.disabled = false;
 			resetButton.disabled = false;
+			startCreateButton.disabled = false;
 
 			perpageSelect.disabled = false;
 			nameInput.disabled = false;
@@ -482,7 +492,7 @@ const startEditing = () => {
 	editButton.textContent = 'Подтвердить';
 };
 
-const commit = () => {
+const commitEditing = () => {
 	if (editingStarted !== true) {
 		output.classList.add('error');
 		output.textContent = 'Ошибка приложения. Редактирование не начато.';
@@ -561,8 +571,6 @@ const commit = () => {
 
 		return;
 	}
-
-	location.origin + '/api/v2/abonents/'
 
 	fetch(
 		`${ location.origin }/api/v2/abonents/${abonentIdNum}`,
@@ -707,7 +715,168 @@ const deleteAbonent = () => {
 				deleteButton.disabled = false;
 			}
 		});
+};
 
+const startCreating = () => {
+	currentAbonentState = {};
+	searchSection.classList.add('js-hidden');
+	detailsSection.classList.remove('js-hidden');
+
+	authButton.disabled = true;
+	backToListButton.classList.add('js-hidden');
+	deleteButton.classList.add('js-hidden');
+	editButton.classList.add('js-hidden');
+
+	commitCreateButton.classList.remove('js-hidden');
+	cancelCreateButton.classList.remove('js-hidden');
+
+	abonentIdElement.textContent = 'Имя';
+
+	abonentNameInput.disabled = false;
+	abonentAddressInput.disabled = false;
+	abonentPhoneInput.disabled = false;
+	abonentMobileInput.disabled = false;
+	krossInput.disabled = false;
+	magistralInput.disabled = false;
+	raspredInput.disabled = false;
+	adslInput.disabled = false;
+
+	abonentNameInput.value = '';
+	abonentAddressInput.value = '';
+	abonentPhoneInput.value = '';
+	abonentMobileInput.value = '';
+	krossInput.value = '';
+	magistralInput.value = '';
+	raspredInput.value = '';
+	adslInput.value = '';
+};
+
+const cancelCreating = () => {
+	searchSection.classList.remove('js-hidden');
+	detailsSection.classList.add('js-hidden');
+
+	authButton.disabled = false;
+	backToListButton.classList.remove('js-hidden');
+	deleteButton.classList.remove('js-hidden');
+	editButton.classList.remove('js-hidden');
+
+	commitCreateButton.classList.add('js-hidden');
+	cancelCreateButton.classList.add('js-hidden');
+
+	abonentIdElement.textContent = '';
+
+	abonentNameInput.disabled = true;
+	abonentAddressInput.disabled = true;
+	abonentPhoneInput.disabled = true;
+	abonentMobileInput.disabled = true;
+	krossInput.disabled = true;
+	magistralInput.disabled = true;
+	raspredInput.disabled = true;
+	adslInput.disabled = true;
+
+	abonentNameInput.value = '';
+	abonentAddressInput.value = '';
+	abonentPhoneInput.value = '';
+	abonentMobileInput.value = '';
+	krossInput.value = '';
+	magistralInput.value = '';
+	raspredInput.value = '';
+	adslInput.value = '';
+};
+
+const commitCreating = () =>
+{
+	const newAbonent = {
+		name: abonentNameInput.value || null,
+		address: abonentAddressInput.value || null,
+		phone: abonentPhoneInput.value || null,
+		mobile: abonentMobileInput.value || null,
+		kross: Number(krossInput) || null,
+		magistral: Number(magistralInput) || null,
+		raspred: Number(raspredInput) || null,
+		adsl: Number(adslInput) || null,
+	};
+
+	fetch(
+		`${ location.origin }/api/v2/abonents`,
+		{
+			method: 'post',
+			body: JSON.stringify(newAbonent),
+			headers: {'Content-Type': 'application/json'},
+		},
+	)
+		.then((res) => checkNginxErrorHtmlAndParseJson(res))
+		.then((data) => {
+			if (data?.error || (data?.statusCode && data.statusCode !== OK)) {
+				throw data;
+			}
+
+			const newId = data?.id;
+			if (typeof newId !== 'number') {
+				throw new Error('Не удалось создать нового абонента');
+			}
+
+			output.classList.remove('error');
+			output.textContent = `Создан новый абонент с номером #${newId}`;
+		})
+		.catch((err) => {
+			output.classList.add('error');
+			let message = '';
+			if (err?.error) {
+				if (typeof err?.message === 'string') {
+					message = err.message;
+				}
+				else if (Array.isArray(err?.message)) {
+					message = err.message.join('; ');
+				}
+				else {
+					message = 'Неизвестная ошибка';
+				}
+
+				if (err?.statusCode === 401 || err?.statusCode === 419) {
+					loggedIn = false;
+					authButton.textContent = 'Войти';
+				}
+			}
+			else {
+				message = err.message || 'Неизвестная ошибка';
+			}
+
+			output.textContent = message;
+		})
+		.finally(() => {
+			authButton.disabled = false;
+
+			searchSection.classList.remove('js-hidden');
+			detailsSection.classList.add('js-hidden');
+
+			backToListButton.classList.remove('js-hidden');
+			deleteButton.classList.remove('js-hidden');
+			editButton.classList.remove('js-hidden');
+
+			commitCreateButton.classList.add('js-hidden');
+			cancelCreateButton.classList.add('js-hidden');
+
+			abonentIdElement.textContent = '';
+
+			abonentNameInput.disabled = true;
+			abonentAddressInput.disabled = true;
+			abonentPhoneInput.disabled = true;
+			abonentMobileInput.disabled = true;
+			krossInput.disabled = true;
+			magistralInput.disabled = true;
+			raspredInput.disabled = true;
+			adslInput.disabled = true;
+
+			abonentNameInput.value = '';
+			abonentAddressInput.value = '';
+			abonentPhoneInput.value = '';
+			abonentMobileInput.value = '';
+			krossInput.value = '';
+			magistralInput.value = '';
+			raspredInput.value = '';
+			adslInput.value = '';
+		});
 };
 
 const searchAbonents = () => fetchAbonents();
@@ -763,9 +932,14 @@ tbody.addEventListener('click', (ev) => {
 });
 backToListButton.addEventListener('click', closeDetails);
 editButton.addEventListener('click', () => {
-	editingStarted === true ? commit() : startEditing();
+	editingStarted === true ? commitEditing() : startEditing();
 });
 deleteButton.addEventListener('click', deleteAbonent);
+
+startCreateButton.addEventListener('click', startCreating);
+commitCreateButton.addEventListener('click', commitCreating);
+cancelCreateButton.addEventListener('click', cancelCreating);
+
 
 
 document.addEventListener('DOMContentLoaded', initCheckAuth, {once: true});
