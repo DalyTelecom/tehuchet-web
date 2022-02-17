@@ -1560,6 +1560,9 @@ output {
 	margin-top: 1.5em;
 	margin-left: 1.5em;
 }
+output > strong {
+	color: green;
+}
 output > strong.error {
 	color: red;
 }
