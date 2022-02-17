@@ -6,6 +6,8 @@ const NEXT_PAGE_CLASS = 'nextpage';
 const PREVIOUS_PAGE_CLASS = 'previouspage';
 
 let loggedIn = false;
+let editingStarted = false;
+let currentAbonentState = {};
 
 const checkNginxErrorHtmlAndParseJson = async (res) => {
 	const contentType = res.headers.get('Content-Type');
@@ -42,6 +44,8 @@ const raspredInput = document.body.querySelector('#raspred');
 const adslInput = document.body.querySelector('#adsl');
 const boxes = document.body.querySelector('#boxes');
 const backToListButton = document.body.querySelector('#back-to-list');
+const editButton = document.body.querySelector('#edit');
+const deleteButton = document.body.querySelector('#delete');
 
 const login = () => {
 	output.textContent = '';
@@ -132,6 +136,8 @@ const logout = () => {
 		authButton.textContent = 'Войти';
 		output.classList.add('error');
 		output.textContent = 'Залогинтесь';
+
+		closeDetails();
 	})
 	.catch((err) => {
 		output.classList.add('error');
@@ -421,6 +427,8 @@ const fetchAbonentDetails = (abonentID) => {
 			phoneInput.disabled = false;
 			addressInput.disabled = false;
 			backToListButton.disabled = false;
+			editButton.disabled = false;
+			deleteButton.disabled = false;
 
 			pagination.querySelectorAll('button').forEach(
 				(b) => { b.disabled = false; }
@@ -432,6 +440,263 @@ const fetchAbonentDetails = (abonentID) => {
 const closeDetails = () => {
 	searchSection.classList.remove('js-hidden');
 	detailsSection.classList.add('js-hidden');
+};
+
+const startEditing = () => {
+	const abonentIdStr = abonentIdElement.textContent?.replace('#', '') || '-';
+	const abonentIdNum = Number(abonentIdStr);
+	if (!abonentIdNum) {
+		output.classList.add('error');
+		output.textContent = 'Ошибка приложения. Некорректный идентификатор абонента.';
+		return;
+	}
+
+	editingStarted = true;
+
+	authButton.disabled = true;
+	backToListButton.disabled = true;
+	deleteButton.disabled = true;
+
+	abonentNameInput.disabled = false;
+	abonentAddressInput.disabled = false;
+	abonentPhoneInput.disabled = false;
+	abonentMobileInput.disabled = false;
+	krossInput.disabled = false;
+	magistralInput.disabled = false;
+	raspredInput.disabled = false;
+	adslInput.disabled = false;
+
+	currentAbonentState = {
+		name: abonentNameInput.value || null,
+		address: abonentAddressInput.value || null,
+		phone: abonentPhoneInput.value || null,
+		mobile = abonentMobileInput.value || null,
+		kross: Number(krossInput) || null,
+		magistral: Number(magistralInput) || null,
+		raspred: Number(raspredInput) || null,
+		adsl: Number(adslInput) || null,
+	};
+
+	editButton.textContent = 'Подтвердить';
+};
+
+const commit = () => {
+	if (editingStarted !== true) {
+		output.classList.add('error');
+		output.textContent = 'Ошибка приложения. Редактирование не начато.';
+		currentAbonentState = {};
+		return;
+	}
+
+	const abonentIdStr = abonentIdElement.textContent?.replace('#', '') || '-';
+	const abonentIdNum = Number(abonentIdStr);
+	if (!abonentIdNum) {
+		editingStarted = false;
+		editButton.textContent = 'Редактировать';
+		output.classList.add('error');
+		output.textContent = 'Ошибка приложения. Некорректный идентификатор абонента.';
+
+		authButton.disabled = false;
+		backToListButton.disabled = false;
+		deleteButton.disabled = false;
+
+		abonentNameInput.disabled = true;
+		abonentAddressInput.disabled = true;
+		abonentPhoneInput.disabled = true;
+		abonentMobileInput.disabled = true;
+		krossInput.disabled = true;
+		magistralInput.disabled = true;
+		raspredInput.disabled = true;
+		adslInput.disabled = true;
+
+		currentAbonentState = {};
+
+		return;
+	}
+
+	const name = abonentNameInput.value || '-';
+	const commitConfirmMessage = `Вы уверены, что корректно отредактировали все необходимые данные абонента #${abonentIdNum} ${name}?`;
+	const agree = confirm(commitConfirmMessage);
+	if (agree !== true) {
+		return;
+	}
+
+	const updatedAbonentState = {
+		name: abonentNameInput.value || null,
+		address: abonentAddressInput.value || null,
+		phone: abonentPhoneInput.value || null,
+		mobile = abonentMobileInput.value || null,
+		kross: Number(krossInput) || null,
+		magistral: Number(magistralInput) || null,
+		raspred: Number(raspredInput) || null,
+		adsl: Number(adslInput) || null,
+	};
+
+	const diff = {};
+	for (const key in updatedAbonentState) {
+		if (updatedAbonentState[key] !== currentAbonentState[key]) {
+			diff[key] = updatedAbonentState[key];
+		}
+	}
+	if (Object.keys(diff).length === 0) {
+		editingStarted = false;
+		editButton.textContent = 'Редактировать';
+
+		authButton.disabled = false;
+		backToListButton.disabled = false;
+		deleteButton.disabled = false;
+
+		abonentNameInput.disabled = true;
+		abonentAddressInput.disabled = true;
+		abonentPhoneInput.disabled = true;
+		abonentMobileInput.disabled = true;
+		krossInput.disabled = true;
+		magistralInput.disabled = true;
+		raspredInput.disabled = true;
+		adslInput.disabled = true;
+
+		currentAbonentState = {};
+
+		return;
+	}
+
+	location.origin + '/api/v2/abonents/'
+
+	fetch(
+		`${ location.origin }/api/v2/abonents/${abonentIdNum}`,
+		{
+			method: 'put',
+			body: JSON.stringify(diff),
+			headers: {'Content-Type': 'application/json'},
+		},
+	)
+		.then((res) => checkNginxErrorHtmlAndParseJson(res))
+		.then((data) => {
+			if (data?.error) {
+				throw data;
+			}
+
+			if (data?.success !== true) {
+				throw new Error('Не удалось обновить данные абонента');
+			}
+
+			output.classList.remove('error');
+			output.textContent = `Данные абонента ${abonentIdNum} ${name} обновлены`;
+		})
+		.catch((err) => {
+			output.classList.add('error');
+			let message = '';
+			if (err?.error) {
+				if (typeof err?.message === 'string') {
+					message = err.message;
+				}
+				else if (Array.isArray(err?.message)) {
+					message = err.message.join('; ');
+				}
+				else {
+					message = 'Неизвестная ошибка';
+				}
+
+				if (err?.statusCode === 401 || err?.statusCode === 419) {
+					loggedIn = false;
+					authButton.textContent = 'Войти';
+				}
+			}
+			else {
+				message = err.message || 'Неизвестная ошибка';
+			}
+
+			output.textContent = message;
+		})
+		.finally(() => {
+			authButton.disabled = false;
+			editingStarted = false;
+			currentAbonentState = {};
+
+			editButton.textContent = 'Редактировать';
+
+			abonentNameInput.disabled = true;
+			abonentAddressInput.disabled = true;
+			abonentPhoneInput.disabled = true;
+			abonentMobileInput.disabled = true;
+			krossInput.disabled = true;
+			magistralInput.disabled = true;
+			raspredInput.disabled = true;
+			adslInput.disabled = true;
+
+			if (loggedIn === true) {
+				backToListButton.disabled = false;
+				deleteButton.disabled = false;
+			}
+		});
+};
+
+const deleteAbonent = () => {
+	const abonentID = abonentIdElement.textContent?.replace('#', '') || '-';
+	const name = abonentNameInput.value || '-';
+
+	const deleteConfirmMessage = `Вы уверены, что хотите удалить данные абонента #${abonentID} ${name}?`;
+	const agree = confirm(deleteConfirmMessage);
+
+	if (agree !== true) {
+		return;
+	}
+
+	authButton.disabled = true;
+	backToListButton.disabled = true;
+	editButton.disabled = true;
+	deleteButton.disabled = true;
+
+	fetch(`${ location.origin }/api/v2/abonents/${abonentID}`, {method: 'delete'})
+		.then((res) => checkNginxErrorHtmlAndParseJson(res))
+		.then((data) => {
+			if (data?.error) {
+				throw data;
+			}
+
+			if (data?.success !== true) {
+				throw new Error('Не удалось удалить данные абонента');
+			}
+
+			output.classList.remove('error');
+			output.textContent = `Данные абонента ${abonentID} ${name} удалены`;
+
+			closeDetails();
+		})
+		.catch((err) => {
+			output.classList.add('error');
+			let message = '';
+			if (err?.error) {
+				if (typeof err?.message === 'string') {
+					message = err.message;
+				}
+				else if (Array.isArray(err?.message)) {
+					message = err.message.join('; ');
+				}
+				else {
+					message = 'Неизвестная ошибка';
+				}
+
+				if (err?.statusCode === 401 || err?.statusCode === 419) {
+					loggedIn = false;
+					authButton.textContent = 'Войти';
+				}
+			}
+			else {
+				message = err.message || 'Неизвестная ошибка';
+			}
+
+			output.textContent = message;
+		})
+		.finally(() => {
+			authButton.disabled = false;
+			if (loggedIn === true) {
+				backToListButton.disabled = false;
+				editButton.disabled = false;
+				deleteButton.disabled = false;
+			}
+		});
+
 };
 
 const searchAbonents = () => fetchAbonents();
@@ -486,6 +751,10 @@ tbody.addEventListener('click', (ev) => {
 	fetchAbonentDetails(targetAbonentID);
 });
 backToListButton.addEventListener('click', closeDetails);
+editButton.addEventListener('click', () => {
+	editingStarted === true ? commit() : startEditing();
+});
+deleteButton.addEventListener('click', deleteAbonent);
 
 
 document.addEventListener('DOMContentLoaded', initCheckAuth, {once: true});
