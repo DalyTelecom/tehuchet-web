@@ -1508,7 +1508,7 @@ ul.pagination {
 	overflow-x: auto; }
 	.table-wrapper td {
 		cursor: pointer; }
-	.table-wrapper tr:focus {
+	.table-wrapper tr:hover {
 		color: var(--bold); }
 
 table {
