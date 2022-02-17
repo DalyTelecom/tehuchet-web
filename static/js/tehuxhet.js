@@ -1,5 +1,7 @@
 (() => {
 
+const OK = 200;
+
 const ACTIVE_CLASS = 'active';
 const PAGE_NUMBER_CLASS = 'pagenumber';
 const NEXT_PAGE_CLASS = 'nextpage';
@@ -124,7 +126,7 @@ const logout = () => {
 	})
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
-		if (data?.error) {
+		if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
 			throw data;
 		}
 
@@ -254,7 +256,7 @@ const fetchAbonents = (pageNumber) => {
 	})
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
-		if (data?.error) {
+		if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
 			throw data;
 		}
 
@@ -349,7 +351,7 @@ const fetchAbonentDetails = (abonentID) => {
 	})
 	.then((res) => checkNginxErrorHtmlAndParseJson(res))
 	.then((data) => {
-		if (data?.error) {
+		if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
 			throw data;
 		}
 
@@ -572,7 +574,7 @@ const commit = () => {
 	)
 		.then((res) => checkNginxErrorHtmlAndParseJson(res))
 		.then((data) => {
-			if (data?.error) {
+			if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
 				throw data;
 			}
 
@@ -650,7 +652,7 @@ const deleteAbonent = () => {
 	fetch(`${ location.origin }/api/v2/abonents/${abonentID}`, {method: 'delete'})
 		.then((res) => checkNginxErrorHtmlAndParseJson(res))
 		.then((data) => {
-			if (data?.error) {
+			if (data?.error || (data?.statusCode & data.statusCode !== OK)) {
 				throw data;
 			}
 
