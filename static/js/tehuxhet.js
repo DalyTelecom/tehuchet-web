@@ -20,7 +20,7 @@ const checkNginxErrorHtmlAndParseJson = async (res) => {
 
 const checkAuthStatus = (res) => {
 	const {status} = res;
-	if (status === 401 || status || 419) {
+	if (status === 401 || status === 419) {
 		loggedIn = false;
 		authButton.textContent = 'Войти';
 	}
