@@ -1417,7 +1417,7 @@ button,
 #header {
 	display: flex;
 	border-bottom: solid 5px var(--brand-primary);
-	padding: 6em 0 1em 0;
+	padding: 2.5em 0 1em 0;
 	position: relative; }
 	#header > * {
 		flex: 1;
@@ -1433,17 +1433,15 @@ button,
 		#header {
 			padding-top: 5em; } }
 	@media screen and (max-width: 736px) {
-		#header {
-			padding-top: 6.5em; }
-			#header .logo {
-				font-size: 1.25em;
-				margin: 0; }
-			#header .icons {
-				height: 5em;
-				line-height: 5em;
-				position: absolute;
-				right: -0.5em;
-				top: 0; } }
+		#header .logo {
+			font-size: 1.25em;
+			margin: 0; }
+		#header .icons {
+			height: 5em;
+			line-height: 5em;
+			position: absolute;
+			right: -0.5em;
+			top: 0; } }
 
 /* Footer */
 #footer .copyright {
