@@ -732,6 +732,8 @@ const startCreating = () => {
 
 	commitCreateButton.classList.remove('js-hidden');
 	cancelCreateButton.classList.remove('js-hidden');
+	commitCreateButton.disabled = false;
+	cancelCreateButton.disabled = false;
 
 	abonentIdElement.textContent = 'Имя';
 
