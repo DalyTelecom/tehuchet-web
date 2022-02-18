@@ -1033,6 +1033,10 @@ input[type="url"],
 select {
 	height: 2.75em; }
 
+input[type="text"]:disabled, select:disabled {
+	background-color: rgb(240, 240, 240);
+}
+
 textarea {
 	padding: 0.75em 1em; }
 
