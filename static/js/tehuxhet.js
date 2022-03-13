@@ -469,6 +469,7 @@ const startEditing = () => {
 	authButton.disabled = true;
 	backToListButton.disabled = true;
 	deleteButton.disabled = true;
+	cancelEditButton.disabled = false;
 
 	deleteButton.classList.add('js-hidden');
 	cancelEditButton.classList.remove('js-hidden');
