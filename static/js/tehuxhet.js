@@ -488,10 +488,10 @@ const startEditing = () => {
 		address: abonentAddressInput.value || null,
 		phone: abonentPhoneInput.value || null,
 		mobile: abonentMobileInput.value || null,
-		kross: Number(krossInput) || null,
-		magistral: Number(magistralInput) || null,
-		raspred: Number(raspredInput) || null,
-		adsl: Number(adslInput) || null,
+		kross: Number(krossInput.value) || null,
+		magistral: Number(magistralInput.value) || null,
+		raspred: Number(raspredInput.value) || null,
+		adsl: Number(adslInput.value) || null,
 	};
 
 	editButton.textContent = 'Подтвердить';
