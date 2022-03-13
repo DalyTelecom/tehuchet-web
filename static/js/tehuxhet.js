@@ -52,6 +52,7 @@ const deleteButton = document.body.querySelector('#delete');
 const startCreateButton = document.body.querySelector('#create');
 const commitCreateButton = document.body.querySelector('#commit-create');
 const cancelCreateButton = document.body.querySelector('#cancel-create');
+const cancelEditButton = document.body.querySelector('#cancel-edit');
 
 const login = () => {
 	output.textContent = '';
@@ -469,6 +470,9 @@ const startEditing = () => {
 	backToListButton.disabled = true;
 	deleteButton.disabled = true;
 
+	deleteButton.classList.add('js-hidden');
+	cancelEditButton.classList.remove('js-hidden');
+
 	abonentNameInput.disabled = false;
 	abonentAddressInput.disabled = false;
 	abonentPhoneInput.disabled = false;
@@ -492,6 +496,46 @@ const startEditing = () => {
 	editButton.textContent = 'Подтвердить';
 };
 
+const cancelEditing = () => {
+	output.classList.remove('error');
+	output.textContent = 'Редактирование абонента отменено';
+
+	authButton.disabled = false;
+	backToListButton.classList.remove('js-hidden');
+	deleteButton.classList.remove('js-hidden');
+	deleteButton.disabled = false;
+	editButton.classList.remove('js-hidden');
+	cancelEditButton.disabled = true;
+	cancelEditButton.classList.add('js-hidden');
+
+	editingStarted = false;
+	abonentNameInput.value = currentAbonentState.name ?? '';
+	abonentAddressInput.value = currentAbonentState.address ?? '';
+	abonentPhoneInput.value = currentAbonentState.phone ?? '';
+	abonentMobileInput.value = currentAbonentState.mobile ?? '';
+	krossInput.value = currentAbonentState.kross ?? '';
+	magistralInput.value = currentAbonentState.magistral ?? '';
+	raspredInput.value = currentAbonentState.raspred ?? '';
+	adslInput.value = currentAbonentState.adsl ?? '';
+	currentAbonentState = {};
+
+	editButton.textContent = 'Редактировать';
+
+	abonentNameInput.disabled = true;
+	abonentAddressInput.disabled = true;
+	abonentPhoneInput.disabled = true;
+	abonentMobileInput.disabled = true;
+	krossInput.disabled = true;
+	magistralInput.disabled = true;
+	raspredInput.disabled = true;
+	adslInput.disabled = true;
+
+	if (loggedIn === true) {
+		backToListButton.disabled = false;
+		deleteButton.disabled = false;
+	}
+};
+
 const commitEditing = () => {
 	if (editingStarted !== true) {
 		output.classList.add('error');
@@ -508,9 +552,13 @@ const commitEditing = () => {
 		output.classList.add('error');
 		output.textContent = 'Ошибка приложения. Некорректный идентификатор абонента.';
 
+		deleteButton.classList.remove('js-hidden');
+		cancelEditButton.classList.add('js-hidden');
+
 		authButton.disabled = false;
 		backToListButton.disabled = false;
 		deleteButton.disabled = false;
+		cancelEditButton.disabled = true;
 
 		abonentNameInput.disabled = true;
 		abonentAddressInput.disabled = true;
@@ -557,6 +605,10 @@ const commitEditing = () => {
 		authButton.disabled = false;
 		backToListButton.disabled = false;
 		deleteButton.disabled = false;
+		cancelEditButton.disabled = true;
+
+		deleteButton.classList.remove('js-hidden');
+		cancelEditButton.classList.add('js-hidden');
 
 		abonentNameInput.disabled = true;
 		abonentAddressInput.disabled = true;
@@ -624,6 +676,9 @@ const commitEditing = () => {
 			currentAbonentState = {};
 
 			editButton.textContent = 'Редактировать';
+
+			deleteButton.classList.remove('js-hidden');
+			cancelEditButton.classList.add('js-hidden');
 
 			abonentNameInput.disabled = true;
 			abonentAddressInput.disabled = true;
@@ -947,6 +1002,7 @@ deleteButton.addEventListener('click', deleteAbonent);
 startCreateButton.addEventListener('click', startCreating);
 commitCreateButton.addEventListener('click', commitCreating);
 cancelCreateButton.addEventListener('click', cancelCreating);
+cancelEditButton.addEventListener('click', cancelEditing);
 
 
 
