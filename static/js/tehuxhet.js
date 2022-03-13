@@ -1,6 +1,9 @@
 (() => {
 
 const OK = 200;
+const FORBIDDEN = 401;
+const SESSION_EXPIRED = 419;
+const JS_HIDDEN = 'js-hidden';
 
 const ACTIVE_CLASS = 'active';
 const PAGE_NUMBER_CLASS = 'pagenumber';
@@ -162,7 +165,7 @@ const logout = () => {
 				message = 'Неизвестная ошибка';
 			}
 
-			if (err?.statusCode === 401 || err?.statusCode === 419) {
+			if (err?.statusCode === FORBIDDEN || err?.statusCode === SESSION_EXPIRED) {
 				loggedIn = false;
 				authButton.textContent = 'Войти';
 			}
@@ -219,7 +222,7 @@ const initCheckAuth = () =>
 		.catch((err) => {
 			output.classList.add('error');
 			let message = 'Залогинтесь';
-			if (err?.error && err?.statusCode === 419 && typeof err?.message === 'string') {
+			if (err?.error && err?.statusCode === SESSION_EXPIRED && typeof err?.message === 'string') {
 				message = err.message;
 			}
 			output.textContent = message;
@@ -310,7 +313,7 @@ const fetchAbonents = (pageNumber) => {
 				message = 'Неизвестная ошибка';
 			}
 
-			if (err?.statusCode === 401 || err?.statusCode === 419) {
+			if (err?.statusCode === FORBIDDEN || err?.statusCode === SESSION_EXPIRED) {
 				loggedIn = false;
 				authButton.textContent = 'Войти';
 			}
@@ -398,8 +401,8 @@ const fetchAbonentDetails = (abonentID) => {
 		});
 		boxes.innerHTML = boxesContent;
 
-		searchSection.classList.add('js-hidden');
-		detailsSection.classList.remove('js-hidden');
+		searchSection.classList.add(JS_HIDDEN);
+		detailsSection.classList.remove(JS_HIDDEN);
 
 	})
 	.catch((err) => {
@@ -416,7 +419,7 @@ const fetchAbonentDetails = (abonentID) => {
 				message = 'Неизвестная ошибка';
 			}
 
-			if (err?.statusCode === 401 || err?.statusCode === 419) {
+			if (err?.statusCode === FORBIDDEN || err?.statusCode === SESSION_EXPIRED) {
 				loggedIn = false;
 				authButton.textContent = 'Войти';
 			}
@@ -451,8 +454,8 @@ const fetchAbonentDetails = (abonentID) => {
 };
 
 const closeDetails = () => {
-	searchSection.classList.remove('js-hidden');
-	detailsSection.classList.add('js-hidden');
+	searchSection.classList.remove(JS_HIDDEN);
+	detailsSection.classList.add(JS_HIDDEN);
 };
 
 const startEditing = () => {
@@ -471,8 +474,8 @@ const startEditing = () => {
 	deleteButton.disabled = true;
 	cancelEditButton.disabled = false;
 
-	deleteButton.classList.add('js-hidden');
-	cancelEditButton.classList.remove('js-hidden');
+	deleteButton.classList.add(JS_HIDDEN);
+	cancelEditButton.classList.remove(JS_HIDDEN);
 
 	abonentNameInput.disabled = false;
 	abonentAddressInput.disabled = false;
@@ -502,12 +505,12 @@ const cancelEditing = () => {
 	output.textContent = 'Редактирование абонента отменено';
 
 	authButton.disabled = false;
-	backToListButton.classList.remove('js-hidden');
-	deleteButton.classList.remove('js-hidden');
+	backToListButton.classList.remove(JS_HIDDEN);
+	deleteButton.classList.remove(JS_HIDDEN);
 	deleteButton.disabled = false;
-	editButton.classList.remove('js-hidden');
+	editButton.classList.remove(JS_HIDDEN);
 	cancelEditButton.disabled = true;
-	cancelEditButton.classList.add('js-hidden');
+	cancelEditButton.classList.add(JS_HIDDEN);
 
 	editingStarted = false;
 	abonentNameInput.value = currentAbonentState.name ?? '';
@@ -553,8 +556,8 @@ const commitEditing = () => {
 		output.classList.add('error');
 		output.textContent = 'Ошибка приложения. Некорректный идентификатор абонента.';
 
-		deleteButton.classList.remove('js-hidden');
-		cancelEditButton.classList.add('js-hidden');
+		deleteButton.classList.remove(JS_HIDDEN);
+		cancelEditButton.classList.add(JS_HIDDEN);
 
 		authButton.disabled = false;
 		backToListButton.disabled = false;
@@ -608,8 +611,8 @@ const commitEditing = () => {
 		deleteButton.disabled = false;
 		cancelEditButton.disabled = true;
 
-		deleteButton.classList.remove('js-hidden');
-		cancelEditButton.classList.add('js-hidden');
+		deleteButton.classList.remove(JS_HIDDEN);
+		cancelEditButton.classList.add(JS_HIDDEN);
 
 		abonentNameInput.disabled = true;
 		abonentAddressInput.disabled = true;
@@ -660,7 +663,7 @@ const commitEditing = () => {
 					message = 'Неизвестная ошибка';
 				}
 
-				if (err?.statusCode === 401 || err?.statusCode === 419) {
+				if (err?.statusCode === FORBIDDEN || err?.statusCode === SESSION_EXPIRED) {
 					loggedIn = false;
 					authButton.textContent = 'Войти';
 				}
@@ -678,8 +681,8 @@ const commitEditing = () => {
 
 			editButton.textContent = 'Редактировать';
 
-			deleteButton.classList.remove('js-hidden');
-			cancelEditButton.classList.add('js-hidden');
+			deleteButton.classList.remove(JS_HIDDEN);
+			cancelEditButton.classList.add(JS_HIDDEN);
 
 			abonentNameInput.disabled = true;
 			abonentAddressInput.disabled = true;
@@ -752,7 +755,7 @@ const deleteAbonent = () => {
 					message = 'Неизвестная ошибка';
 				}
 
-				if (err?.statusCode === 401 || err?.statusCode === 419) {
+				if (err?.statusCode === FORBIDDEN || err?.statusCode === SESSION_EXPIRED) {
 					loggedIn = false;
 					authButton.textContent = 'Войти';
 				}
@@ -778,16 +781,16 @@ const startCreating = () => {
 	output.textContent = 'Введите данные нового абонента';
 
 	currentAbonentState = {};
-	searchSection.classList.add('js-hidden');
-	detailsSection.classList.remove('js-hidden');
+	searchSection.classList.add(JS_HIDDEN);
+	detailsSection.classList.remove(JS_HIDDEN);
 
 	authButton.disabled = true;
-	backToListButton.classList.add('js-hidden');
-	deleteButton.classList.add('js-hidden');
-	editButton.classList.add('js-hidden');
+	backToListButton.classList.add(JS_HIDDEN);
+	deleteButton.classList.add(JS_HIDDEN);
+	editButton.classList.add(JS_HIDDEN);
 
-	commitCreateButton.classList.remove('js-hidden');
-	cancelCreateButton.classList.remove('js-hidden');
+	commitCreateButton.classList.remove(JS_HIDDEN);
+	cancelCreateButton.classList.remove(JS_HIDDEN);
 	commitCreateButton.disabled = false;
 	cancelCreateButton.disabled = false;
 
@@ -816,16 +819,16 @@ const cancelCreating = () => {
 	output.classList.remove('error');
 	output.textContent = 'Создание нового абонента отменено';
 
-	searchSection.classList.remove('js-hidden');
-	detailsSection.classList.add('js-hidden');
+	searchSection.classList.remove(JS_HIDDEN);
+	detailsSection.classList.add(JS_HIDDEN);
 
 	authButton.disabled = false;
-	backToListButton.classList.remove('js-hidden');
-	deleteButton.classList.remove('js-hidden');
-	editButton.classList.remove('js-hidden');
+	backToListButton.classList.remove(JS_HIDDEN);
+	deleteButton.classList.remove(JS_HIDDEN);
+	editButton.classList.remove(JS_HIDDEN);
 
-	commitCreateButton.classList.add('js-hidden');
-	cancelCreateButton.classList.add('js-hidden');
+	commitCreateButton.classList.add(JS_HIDDEN);
+	cancelCreateButton.classList.add(JS_HIDDEN);
 
 	abonentIdElement.textContent = '';
 
@@ -897,7 +900,7 @@ const commitCreating = () =>
 					message = 'Неизвестная ошибка';
 				}
 
-				if (err?.statusCode === 401 || err?.statusCode === 419) {
+				if (err?.statusCode === FORBIDDEN || err?.statusCode === SESSION_EXPIRED) {
 					loggedIn = false;
 					authButton.textContent = 'Войти';
 				}
@@ -911,15 +914,15 @@ const commitCreating = () =>
 		.finally(() => {
 			authButton.disabled = false;
 
-			searchSection.classList.remove('js-hidden');
-			detailsSection.classList.add('js-hidden');
+			searchSection.classList.remove(JS_HIDDEN);
+			detailsSection.classList.add(JS_HIDDEN);
 
-			backToListButton.classList.remove('js-hidden');
-			deleteButton.classList.remove('js-hidden');
-			editButton.classList.remove('js-hidden');
+			backToListButton.classList.remove(JS_HIDDEN);
+			deleteButton.classList.remove(JS_HIDDEN);
+			editButton.classList.remove(JS_HIDDEN);
 
-			commitCreateButton.classList.add('js-hidden');
-			cancelCreateButton.classList.add('js-hidden');
+			commitCreateButton.classList.add(JS_HIDDEN);
+			cancelCreateButton.classList.add(JS_HIDDEN);
 
 			abonentIdElement.textContent = '';
 
