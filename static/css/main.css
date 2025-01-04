@@ -1,12 +1,12 @@
 :root {
 	--brand-primary: purple;
-	--brand-focus: rgb(143, 1, 143);
-	--brand-active: rgb(110, 0, 110);
+	--brand-focus: #8f018f;
+	--brand-active: #6e006e;
 	--white: #fff;
 	--grey: #7f888f;
 	--grey2: #9fa3a6;
 	--bold: #3d4449;
-	--grey-border-color: rgba(210, 215, 217, 0.75);
+	--grey-border-color: rgba(210,215,217,.75);
 }
 
 html, body, div, span, applet, object,
